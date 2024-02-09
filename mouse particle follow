@@ -1,0 +1,41 @@
+import pygame
+from mouse import get_position as pos
+from random import randrange as rand
+
+
+class Drop():
+    def __init__(self, x, y):
+        self.locationx = x
+        self.locationy = y
+        self.color = (255, 235, 128)
+
+    def update_color(self):
+        r, g, b = self.color
+        r -= 5
+        g -= 5
+        b -= 5
+        self.color = (max(0,r), max(0, g), max(b, 0))
+
+pygame.init()
+screen = pygame.display.set_mode()
+drops = []
+
+
+
+running = True
+clock = pygame.time.Clock()
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:running = False
+
+    screen.fill((0, 0, 0))
+    drops.append(Drop(pos()[0] + rand(-25, 25), pos()[1] + rand(-25, 25)))
+
+    for drp in drops:
+        drp.locationy += 5
+        drp.update_color()
+        pygame.draw.rect(screen, drp.color, (drp.locationx, drp.locationy, 2, 12))
+
+    drops = [drp for drp in drops if drp.locationy < screen.get_height()]
+    pygame.display.flip()
+    clock.tick(60)
